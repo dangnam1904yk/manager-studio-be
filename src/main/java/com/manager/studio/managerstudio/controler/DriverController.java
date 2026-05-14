@@ -5,45 +5,42 @@ import com.manager.studio.managerstudio.service.DriverService;
 import com.manager.studio.managerstudio.request.UrlDriver;
 import com.manager.studio.managerstudio.request.Img;
 import com.manager.studio.managerstudio.util.ApiResponse;
+import com.manager.studio.managerstudio.util.Constants;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.*;
 import java.util.List;
-@CrossOrigin(origins = "http://localhost:5000") // Domain của frontend
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(Constants.PREFIX_API_PUBLIC+"/driver")
 public class DriverController {
 
     private  final DriverService driverService;
 
     @PostMapping("getImg")
-    public ResponseEntity<List<Img>>  getImg(@RequestBody UrlDriver driver) throws IOException {
-    return  ResponseEntity.ok(driverService.listImagesA(driver));
+    public ResponseEntity<ApiResponse<List<Img>>>  getImg(@RequestBody UrlDriver driver) throws IOException {
+    return  ResponseEntity.ok(ApiResponse.success(driverService.listImagesA(driver)));
     }
 
-    @PostMapping(value = "/api/stream-images", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/stream-images", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter streamImages(@RequestBody UrlDriver urlDriver) {
         return  driverService.streamImage(urlDriver);
     }
 
-    @PostMapping(value = "/api/choose-img")
-    public ResponseEntity<ApiResponse<ImgChoseRequest>> streamImages(@RequestBody ImgChoseRequest urlDriver) {
+    @PostMapping(value = "/choose-img")
+    public ResponseEntity<ApiResponse<ImgChoseRequest>> streamImages(@RequestBody  @Validated ImgChoseRequest urlDriver) {
         return ResponseEntity.ok(ApiResponse.success(driverService.chooseImg(urlDriver)));
     }
 
-    @GetMapping("/api/proxy-image/{fileId}")
+    @GetMapping("/proxy-image/{fileId}")
     public ResponseEntity<byte[]> proxyImage(@PathVariable String fileId) {
         try {
 

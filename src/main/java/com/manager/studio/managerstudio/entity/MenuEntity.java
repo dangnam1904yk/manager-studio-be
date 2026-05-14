@@ -2,28 +2,34 @@ package com.manager.studio.managerstudio.entity;
 
 import com.manager.studio.managerstudio.entity.base.BaseEntity;
 import com.manager.studio.managerstudio.util.UUIDv7;
+import com.manager.studio.managerstudio.util.UUIDv7Generator;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.IdGeneratorType;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "role",indexes = {
+@Table(name = "menu", indexes = {
         @Index(name = "idx_code", columnList = "code"),
 })
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleEntity extends BaseEntity {
+public class MenuEntity extends BaseEntity {
 
     String code;
 
     String name;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<UserRoleEntity> userRoles;
+    Integer level;
+
+    Integer orderIndex;
+
+    String url;
+
+    String icon;
 }

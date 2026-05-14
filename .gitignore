@@ -34,3 +34,4 @@ build/
 
 ### Key ####
 **/src/main/resources/static/client_secret.json
+**/certs/private_key.pem
